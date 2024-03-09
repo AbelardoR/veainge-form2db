@@ -1,0 +1,27 @@
+.plug-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 1rem;
+    border: 2px solid darkblue;
+    border-radius: .35rem;
+}
+.plug-form > * {
+    width: 100%;
+    padding: 12px;
+}
+
+.plug-form input[type="submit"] {
+    background-color: darkblue;
+    border: 1px solid darkblue;
+    color: white;
+    font-weight: bold;
+}
+.plug-form input[type="submit"]:hover {
+    cursor: pointer;
+    box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.185);
+}
+
+.table-title {
+    text-align: center;
+}
