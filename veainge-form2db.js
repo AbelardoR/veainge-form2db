@@ -6,17 +6,18 @@ jQuery(document).ready(function($) {
     }
     sendingForm('#miFormulario, .plug-form', getData);
     loadDataTable('#table-from-plugin', getData); 
+    removeRow('.remove-row', getData);
 });
 
 function sendingForm(selector='#miFormulario', getData={}) {
-    let form_fields = jQuery(selector).find('input,textarea,select').not('input[type="submit"]');
+    let form_fields = jQuery(selector).find('input').not('input[type="submit"]');
         form_fields.attr('required', 'required');
     jQuery(selector).on('submit', function(e) {
         e.preventDefault();
         let form_data = jQuery(this).serializeArray();
-          
+        getData.action = 'save_data_form',
         getData.formData = form_data; 
-
+        console.log(getData);
         jQuery.post(frontend_ajax_object.ajaxurl, getData,
             function(response) {
                 if (response.status == 'success') {
@@ -30,7 +31,7 @@ function sendingForm(selector='#miFormulario', getData={}) {
 
 function loadDataTable(selector='#table-from-plugin', getData={}) {
     let locale_url = "//cdn.datatables.net/plug-ins/1.13.4/i18n/en-GB.json"; 
-    if (getData.locale) {
+    if (getData.locale && getData.locale != 'en_US') {
         getData.locale = getData.locale.replace('_', '-');
         locale_url = "//cdn.datatables.net/plug-ins/1.13.4/i18n/"+getData.locale+".json";
     }
@@ -39,5 +40,22 @@ function loadDataTable(selector='#table-from-plugin', getData={}) {
         language: {
             url: locale_url,
         },
+    });
+}
+
+function removeRow(selector='.remove-row', getData={}) {
+    jQuery(selector).on('click', function(e) {
+        e.preventDefault();
+        getData.action = 'delete_data_form',
+        getData.id = jQuery(this).attr('target'); 
+        console.log(getData);
+        jQuery.post(frontend_ajax_object.ajaxurl, getData,
+            function(response) {
+                if (response.status == 'success') {
+                    alert(response.message);
+                    window.location.reload();
+                }
+            }
+		);
     });
 }

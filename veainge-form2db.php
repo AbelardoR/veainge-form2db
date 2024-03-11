@@ -87,6 +87,38 @@ add_action('wp_ajax_nopriv_save_data_form', 'save_data_form');
 add_action('wp_ajax_save_data_form', 'save_data_form');
 
 
+function delete_data_form()
+{
+    $refer = check_ajax_referer( 'save-form-info', 'nonce' );  // Check the nonce.
+	$formData = $_POST['id'];
+
+    global $wpdb;
+    $table = tableName($wpdb->prefix);
+
+    // Get the content based on a unique identifier (for example, a title or an ID)
+    // $queryCompre = "SELECT * FROM $table  WHERE content = %s" ;
+    $queryCompre = "SELECT * FROM $table WHERE id = '%s' " ;
+    
+    $existing_content = $wpdb->get_results( $wpdb->prepare( $queryCompre, $formData ) );
+
+    if ($existing_content) {
+        $wpdb->delete($table,  array( 'id' => current($existing_content)->id ));
+        $response = array('status' => 'success' ,'message' => 'Data deleted correctly');
+    } else {
+        $response = array('status' => 'fail' ,'message' => 'Data not found and not deleted');
+    }
+    
+    
+    // Send a response (can be a success message or any other data).
+    wp_send_json($response);
+    
+    // Don't forget to stop execution afterward
+    wp_die();
+}
+
+add_action('wp_ajax_nopriv_delete_data_form', 'delete_data_form');
+add_action('wp_ajax_delete_data_form', 'delete_data_form');
+
 function load_custom_script()
 {
     wp_register_script('frontend-ajax', plugins_url('veainge-form2db.js', __FILE__), array('jquery'), '1.0', true);

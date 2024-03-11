@@ -15,8 +15,9 @@ function show_records_shortcode()
     $html .= '<thead><tr>';
     $html .= "<th>ID</th>";
     foreach (json_decode(end($results)->content, true) as $key => $value) {
-        $html .= "<th> $key </th>";
+        $html .= "<th>".localizedTable($key)."</th>";
     }
+    $html .= "<th> </th>";
     $html .= '</tr></thead>';
     $html .= '<tbody>';
     foreach ($results as $row) {
@@ -25,6 +26,7 @@ function show_records_shortcode()
         foreach (json_decode($row->content, true) as $key => $value) {
             $html .= "<td> $value </td>";
         }
+        $html .= '<td><button class="remove-row" target="'.$row->id.'">&#10006;</button></td>';
         $html .= '</tr>';
     }
     $html .= '</tbody>';
@@ -33,3 +35,15 @@ function show_records_shortcode()
     return $html;
 }
 add_shortcode('show_records', 'show_records_shortcode');
+
+
+function localizedTable($string) : string {
+    $locale_strings  = [];
+
+    if (key_exists($string, $locale_strings)) {
+        return  $locale_strings[$string];
+    } else {
+        return $string;
+    }
+    
+}
